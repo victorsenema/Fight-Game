@@ -1,0 +1,21 @@
+# Ambiente virtual
+.venv/
+venv/
+env/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Editores / SO
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+
+# Checklist pessoal das ondas
+CHECKLIST.md
+
+# Guia de estudo pessoal
+docs/guia_teorico.pdf

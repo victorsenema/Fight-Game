@@ -1,0 +1,82 @@
+{
+  "name": "Martial Hero",
+  "folder": "assets/fighters/martial_hero/Sprites",
+  "frame_size": [200, 200],
+  "pivot": [94, 122],
+  "scale": 3,
+
+  "stats": {
+    "max_hp": 100
+  },
+
+  "movement": {
+    "walk_speed": 2,
+    "run_speed": 4,
+    "dash":     { "speed": 8, "ticks": 10, "recovery": 6 },
+    "backdash": { "speed": 6, "ticks": 12, "recovery": 8 }
+  },
+
+  "default_boxes": {
+    "hurt": [[-18, -52, 37, 52]],
+    "push": [[-12, -48, 24, 48]]
+  },
+
+  "animations": {
+    "idle": {
+      "sheet": "Idle.png", "frames": 8,
+      "durations": [6, 6, 6, 6, 6, 6, 6, 6],
+      "loop": true
+    },
+    "walk": {
+      "sheet": "Run.png", "frames": 8,
+      "durations": [6, 6, 6, 6, 6, 6, 6, 6],
+      "loop": true
+    },
+    "run": {
+      "sheet": "Run.png", "frames": 8,
+      "durations": [4, 4, 4, 4, 4, 4, 4, 4],
+      "loop": true
+    },
+    "dash": {
+      "sheet": "Run.png", "frames": 8,
+      "durations": [2, 2, 2, 2, 2, 2, 2, 2],
+      "loop": false
+    },
+    "backdash": {
+      "sheet": "Jump.png", "frames": 2,
+      "durations": [6, 14],
+      "loop": false
+    },
+    "attack1": {
+      "sheet": "Attack1.png", "frames": 6,
+      "durations": [2, 2, 2, 2, 4, 10],
+      "loop": false,
+      "damage": 8, "hitstun": 14, "knockback": 4,
+      "boxes": {
+        "4": { "hit": [[19, -69, 76, 50]] }
+      }
+    },
+    "attack2": {
+      "sheet": "Attack2.png", "frames": 6,
+      "durations": [3, 3, 3, 3, 4, 12],
+      "loop": false,
+      "damage": 12, "hitstun": 18, "knockback": 7,
+      "boxes": {
+        "4": { "hit": [[19, -53, 81, 38]] }
+      }
+    },
+    "hit": {
+      "sheet": "Take Hit.png", "frames": 4,
+      "durations": [3, 3, 4, 4],
+      "loop": false
+    },
+    "death": {
+      "sheet": "Death.png", "frames": 6,
+      "durations": [5, 5, 5, 6, 8, 999],
+      "loop": false,
+      "boxes": {
+        "0": { "hurt": [], "push": [] }
+      }
+    }
+  }
+}
