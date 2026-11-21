@@ -1,0 +1,8 @@
+{
+    "folder": "assets/stages/ocean_view/Layers",
+    "variants": {
+        "day":   ["Day/Back.png",   "Day/Clouds.png",   "Day/Middle.png",   "Day/Tile.png"],
+        "noon":  ["Noon/Back.png",  "Noon/Clouds.png",  "Noon/Middle.png",  "Noon/Tile.png"],
+        "night": ["Night/Back.png", "Night/Clouds.png", "Night/Middle.png", "Night/Tile.png"]
+    }
+}

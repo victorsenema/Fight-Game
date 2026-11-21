@@ -1,0 +1,150 @@
+=====================================================================
+ CAMINHOS: JSON EM data/ APONTANDO PARA PNGs EM assets/
+=====================================================================
+
+Estrutura do projeto:
+
+  Fight Game/                     <- RAIZ
+  |-- main.py
+  |-- data/
+  |   `-- fighters/
+  |       `-- martial_hero.json
+  `-- assets/
+      `-- fighters/
+          `-- martial_hero/
+              `-- Sprites/
+                  |-- Idle.png
+                  `-- Run.png
+
+
+1) O JSON NAO SABE ONDE ELE ESTA
+---------------------------------------------------------------------
+O JSON so guarda um TEXTO. Quem decide "a partir de onde" esse
+caminho e lido e o codigo Python.
+
+
+2) TRES FORMAS DE ESCREVER O CAMINHO NO JSON
+---------------------------------------------------------------------
+
+2.1) Relativo a RAIZ do projeto   (RECOMENDADO)
+
+       "folder": "assets/fighters/martial_hero/Sprites"
+
+     Nao precisa "voltar pastas": comeca na raiz (Fight Game/).
+     O codigo junta esse texto com a raiz.
+
+2.2) Relativo ao proprio arquivo JSON
+
+       "folder": "../../assets/fighters/martial_hero/Sprites"
+
+     Cada ".." sobe uma pasta:
+       data/fighters/  --..-->  data/  --..-->  RAIZ  --> assets/...
+     Funciona, mas e feio e quebra se mover o JSON de pasta.
+
+2.3) Absoluto   (NUNCA USE)
+
+       "folder": "C:/Users/victo/..."
+
+     So funciona no seu PC. Quebra no PC do professor.
+
+
+3) ARMADILHA: "PASTA ATUAL" NAO E A PASTA DO PROJETO
+---------------------------------------------------------------------
+Caminho relativo simples e resolvido a partir da pasta onde o
+TERMINAL esta, nao de onde o arquivo .py esta.
+
+  cd "Fight Game"   ; python main.py          -> funciona
+  cd Desktop        ; python "Fight Game/main.py"
+                                              -> FileNotFoundError
+
+Solucao: o codigo descobre a raiz pela localizacao do proprio .py
+usando pathlib.
+
+
+4) DESCOBRINDO A RAIZ COM pathlib
+---------------------------------------------------------------------
+__file__        = caminho do arquivo .py que esta rodando
+.resolve()      = transforma em caminho absoluto completo
+.parent         = sobe UMA pasta (cada .parent e um "..")
+/               = junta pedacos de caminho (funciona no Windows)
+
+  Em main.py (que fica NA raiz):
+
+    from pathlib import Path
+    RAIZ = Path(__file__).resolve().parent
+    #      Fight Game/main.py  -> .parent -> Fight Game/
+
+  Em src/core/config.py (dois niveis abaixo da raiz):
+
+    from pathlib import Path
+    RAIZ = Path(__file__).resolve().parent.parent.parent
+    #      config.py -> core/ -> src/ -> Fight Game/
+    #                  parent  parent   parent
+
+  Dica: defina RAIZ uma vez so (no config.py) e importe nos
+  outros arquivos, assim todo mundo usa a mesma.
+
+
+5) USANDO NO LOADER
+---------------------------------------------------------------------
+    import json
+    from pathlib import Path
+    from src.core.config import RAIZ
+
+    caminho_json = RAIZ / "data" / "fighters" / "martial_hero.json"
+
+    with open(caminho_json, encoding="utf-8") as f:
+        dados = json.load(f)
+
+    pasta  = RAIZ / dados["folder"]          # RAIZ + texto do JSON
+    imagem = pasta / "Idle.png"
+
+    print(imagem)
+    # C:\Users\...\Fight Game\assets\fighters\martial_hero\Sprites\Idle.png
+
+    print(imagem.exists())    # True se o arquivo existe
+
+
+6) CHECAGENS UTEIS (fail-fast)
+---------------------------------------------------------------------
+    if not caminho_json.exists():
+        raise FileNotFoundError(f"JSON nao encontrado: {caminho_json}")
+
+    if not pasta.is_dir():
+        raise FileNotFoundError(f"Pasta de sprites nao existe: {pasta}")
+
+    for anim in dados["animations"].values():
+        png = pasta / anim["sheet"]
+        if not png.exists():
+            raise FileNotFoundError(f"Sheet faltando: {png}")
+
+    Atencao: no Windows "Take Hit.png" e "Take hit.png" funcionam
+    os dois, mas no Linux/Mac NAO. Escreva o nome exatamente
+    igual ao arquivo.
+
+
+7) LISTAR ARQUIVOS DE UMA PASTA
+---------------------------------------------------------------------
+    for png in pasta.glob("*.png"):
+        print(png.name)        # Idle.png, Run.png, ...
+
+    png.name    -> "Idle.png"      (nome com extensao)
+    png.stem    -> "Idle"          (nome sem extensao)
+    png.suffix  -> ".png"          (so a extensao)
+    png.parent  -> pasta onde ele esta
+
+
+8) RESUMO
+---------------------------------------------------------------------
+  No JSON  : caminho a partir da raiz, sem ".." e sem C:/
+  No Python: RAIZ = Path(__file__).resolve().parent(...)
+             caminho_final = RAIZ / dados["folder"] / "arquivo.png"
+
+
+9) REFERENCIAS
+---------------------------------------------------------------------
+- pathlib (Path, resolve, parent, /, glob, exists):
+  https://docs.python.org/3/library/pathlib.html
+- __file__ e modulos:
+  https://docs.python.org/3/reference/import.html#file__
+=====================================================================

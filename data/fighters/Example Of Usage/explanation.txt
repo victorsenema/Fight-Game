@@ -1,0 +1,104 @@
+=====================================================================
+ JSON NO PYTHON: LEITURA E CAMPOS FALTANDO
+=====================================================================
+
+1) PRECISO CRIAR UMA ESTRUTURA ANTES DE LER?
+---------------------------------------------------------------------
+Nao. O json.load ja devolve tudo montado:
+
+  JSON          ->  Python
+  objeto {}     ->  dict
+  array []      ->  list
+  "texto"       ->  str
+  10            ->  int
+  4.7           ->  float
+  true/false    ->  True/False
+  null          ->  None
+
+MAS: o Python nao conhece "o formato de uma loja". Cada arquivo
+vira um dicionario com as chaves que estiverem ali. Nenhum padrao
+e garantido. Se faltar um campo, ninguem avisa na leitura: o erro
+so aparece quando voce tenta acessar o campo.
+
+
+2) EXEMPLO DO PROBLEMA
+---------------------------------------------------------------------
+loja_a.json:  {"loja": "Pixel", "site": "pixel.com"}
+loja_b.json:  {"loja": "Retro"}                <- esqueceu "site"
+
+  a["site"]  -> "pixel.com"
+  b["site"]  -> KeyError: 'site'    <- quebra AQUI, nao na leitura
+
+Atencao: "site": null  e  campo ausente sao coisas diferentes.
+  com null      -> b["site"] devolve None (funciona)
+  sem o campo   -> b["site"] da KeyError
+
+
+3) FORMAS DE LIDAR (da mais simples a mais robusta)
+---------------------------------------------------------------------
+
+3.1) .get() com valor padrao
+     Nao quebra, mas esconde o esquecimento.
+     Use para campos OPCIONAIS de verdade.
+
+       b.get("site")              -> None
+       b.get("site", "sem site")  -> "sem site"
+
+3.2) Padroes + mesclagem
+     Dicionario de valores padrao, sobrescrito pelo arquivo.
+     (mesma ideia do default_boxes do lutador)
+
+       PADRAO = {"site": None, "aberta": True}
+       loja = PADRAO | dados_do_json     # o que vier no JSON ganha
+
+3.3) Validar ao carregar (fail-fast)
+     Para campos OBRIGATORIOS: confere logo depois de ler e para
+     com mensagem clara. O erro aparece na inicializacao, nao no
+     meio do jogo.
+
+       OBRIGATORIOS = ["loja", "endereco", "produtos"]
+       para cada campo em OBRIGATORIOS:
+           se campo nao esta em dados:
+               erro("loja_b.json: falta o campo " + campo)
+
+3.4) Converter para uma classe (dataclass)
+     O loader transforma o dict num objeto com campos fixos.
+     Faltar campo obrigatorio da erro na hora de criar o objeto.
+     O codigo passa a usar loja.site em vez de loja["site"]
+     (e o editor autocompleta).
+
+       from dataclasses import dataclass
+
+       @dataclass
+       class Loja:
+           nome: str
+           produtos: list
+           site: str | None = None    # opcional, com padrao
+
+3.5) JSON Schema
+     Arquivo que descreve o formato esperado + biblioteca
+     jsonschema para validar. Usado em projetos grandes;
+     aqui e exagero.
+
+
+4) NO NOSSO PROJETO
+---------------------------------------------------------------------
+O loader faz 3.2 + 3.3:
+  - aplica os padroes (default_boxes)
+  - confere os obrigatorios (frames, durations, sheet...)
+  - confere se os valores fazem sentido (len(durations) == frames)
+
+Assim o resto do jogo recebe dados ja completos e nunca precisa
+se preocupar com campo faltando. 3.4 e opcional, mas deixa o
+codigo mais limpo.
+
+
+5) REFERENCIAS
+---------------------------------------------------------------------
+- dict.get e operador | :
+  https://docs.python.org/3/library/stdtypes.html#dict.get
+- dataclasses:
+  https://docs.python.org/3/library/dataclasses.html
+- JSON Schema:
+  https://json-schema.org/
+=====================================================================

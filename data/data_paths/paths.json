@@ -1,0 +1,9 @@
+{
+    "characters": {
+        "martial_hero":   "data/fighters/martial_hero.json",
+        "martial_hero_2": "data/fighters/martial_hero_2.json"
+    },
+    "stages": {
+        "ocean_view": "data/stages/ocean_view.json"
+    }
+}

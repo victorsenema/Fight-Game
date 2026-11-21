@@ -1,0 +1,56 @@
+{
+  "loja": "Pixel Games",
+  "aberta": true,
+  "fundacao": 2019,
+  "avaliacao_media": 4.7,
+  "site": null,
+
+  "endereco": {
+    "rua": "Av. Central",
+    "numero": 1200,
+    "cidade": "Campo Grande",
+    "coordenadas": [-20.4697, -54.6201]
+  },
+
+  "horarios": {
+    "segunda": ["09:00", "18:00"],
+    "sabado": ["10:00", "14:00"],
+    "domingo": null
+  },
+
+  "produtos": [
+    {
+      "id": 1,
+      "nome": "Controle sem fio",
+      "preco": 249.90,
+      "em_estoque": true,
+      "quantidade": 12,
+      "tags": ["acessório", "bluetooth"],
+      "dimensoes_cm": { "largura": 15.5, "altura": 10, "profundidade": 6.2 },
+      "desconto": null
+    },
+    {
+      "id": 2,
+      "nome": "Jogo de luta \"Edição Especial\"",
+      "preco": 199.0,
+      "em_estoque": false,
+      "quantidade": 0,
+      "tags": [],
+      "dimensoes_cm": {},
+      "desconto": { "percentual": 15, "valido_ate": "2026-12-31" }
+    }
+  ],
+
+  "tabela_de_precos_por_mes": [
+    [249.90, 239.90, 229.90],
+    [199.00, 189.00, 179.00]
+  ],
+
+  "vendas_por_dia": {
+    "1": 14,
+    "2": 9,
+    "15": 31
+  },
+
+  "notas": "Texto com acento, emoji 🎮 e quebra de linha:\nsegunda linha."
+}
